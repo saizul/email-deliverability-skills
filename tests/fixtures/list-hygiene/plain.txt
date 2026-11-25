@@ -1,0 +1,3 @@
+jo@example.net
+kim@yopmail.com
+not-an-email

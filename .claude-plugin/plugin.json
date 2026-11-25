@@ -1,0 +1,14 @@
+{
+  "name": "email-deliverability-skills",
+  "displayName": "Email Deliverability Skills",
+  "version": "0.1.0",
+  "description": "Agent Skills for getting transactional and marketing email into the inbox: SPF/DKIM/DMARC audit, DMARC reports, bounce triage, template lint, list hygiene, warm-up plans, Gmail/Yahoo/Outlook sender requirements and WordPress SMTP.",
+  "author": {
+    "name": "Saizul Amin",
+    "url": "https://github.com/saizul"
+  },
+  "homepage": "https://github.com/saizul/email-deliverability-skills",
+  "repository": "https://github.com/saizul/email-deliverability-skills",
+  "license": "MIT",
+  "keywords": ["email", "deliverability", "dmarc", "spf", "dkim", "bimi", "mta-sts", "smtp", "bounces", "wordpress"]
+}

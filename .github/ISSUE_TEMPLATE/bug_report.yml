@@ -1,0 +1,46 @@
+name: Bug report
+description: A script crashed, reported a wrong finding, or a skill gave unsafe or wrong advice
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never paste secrets, SMTP passwords, API keys or full mailing lists.** Redact email
+        addresses, domains and IP addresses if you prefer.
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Skill
+      options:
+        - dns-auth-audit
+        - dmarc-report-analysis
+        - bounce-and-complaint-triage
+        - email-template-lint
+        - list-hygiene
+        - warmup-plan
+        - sender-requirements-2024-plus
+        - wordpress-smtp-deliverability
+        - validator / repository tooling
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: The command you ran, its output, and (for wrong findings) a minimal redacted input.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "macOS 15, Python 3.12, Claude Code / Codex CLI, ESP or MTA in use"
+    validations:
+      required: true

@@ -1,0 +1,25 @@
+Delivered-To: reader@gmail.example
+Received: from mail.example.com (mail.example.com. [192.0.2.10])
+        by mx.google.example with ESMTPS id abc123
+        for <reader@gmail.example>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2026 10:00:01 -0800 (PST)
+Authentication-Results: mx.google.example;
+       dkim=pass header.i=@example.com header.s=s1 header.b=AbCdEf;
+       spf=pass (google.example: domain of bounce@mail.example.com designates 192.0.2.10 as permitted sender) smtp.mailfrom=bounce@mail.example.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=example.com
+Return-Path: <bounce@mail.example.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=example.com; s=s1;
+        h=from:to:subject:date:message-id:list-unsubscribe:list-unsubscribe-post:mime-version;
+        bh=AAAA; b=BBBB
+From: Example News <news@example.com>
+To: reader@gmail.example
+Subject: November product update
+Date: Wed, 25 Nov 2026 18:00:00 +0000
+Message-ID: <20261125180000.abc@example.com>
+List-Unsubscribe: <https://example.com/u/abc123>, <mailto:unsubscribe@example.com?subject=unsubscribe>
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Hello.

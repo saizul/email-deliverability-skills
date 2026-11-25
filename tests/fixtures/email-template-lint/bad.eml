@@ -1,0 +1,20 @@
+From: Example Deals <deals@example.com>
+To: reader@example.org
+Subject: HUGE BLACK FRIDAY DEALS INSIDE
+MIME-Version: 1.0
+List-Unsubscribe: mailto:unsubscribe@example.com
+Content-Type: multipart/mixed; boundary="mix"
+
+--mix
+Content-Type: text/html; charset=utf-8
+
+<html><body><img src="https://cdn.example.com/deals.jpg"><p>Shop now</p></body></html>
+
+--mix
+Content-Type: application/octet-stream; name="invoice.exe"
+Content-Disposition: attachment; filename="invoice.exe"
+Content-Transfer-Encoding: base64
+
+TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAA=
+
+--mix--

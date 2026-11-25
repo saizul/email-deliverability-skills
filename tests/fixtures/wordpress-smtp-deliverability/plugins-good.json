@@ -1,0 +1,5 @@
+[
+  {"name": "fluent-smtp", "status": "active", "update": "none", "version": "2.2.80"},
+  {"name": "wp-mail-smtp", "status": "inactive", "update": "none", "version": "4.2.0"},
+  {"name": "woocommerce", "status": "active", "update": "none", "version": "9.4.0"}
+]

@@ -1,0 +1,29 @@
+From: feedback@fbl.mailprovider.example
+To: fbl@example.com
+Subject: Email Feedback Report for IP 192.0.2.10
+MIME-Version: 1.0
+Content-Type: multipart/report; report-type=feedback-report; boundary="arf"
+
+--arf
+Content-Type: text/plain
+
+This is an email abuse report for an email message received from IP 192.0.2.10.
+
+--arf
+Content-Type: message/feedback-report
+
+Feedback-Type: abuse
+User-Agent: ExampleFBL/1.0
+Version: 1
+Original-Mail-From: <bounces@example.com>
+Original-Rcpt-To: <angry.reader@example.org>
+Source-IP: 192.0.2.10
+
+--arf
+Content-Type: text/rfc822-headers
+
+From: news@example.com
+To: angry.reader@example.org
+Subject: Black Friday deals
+
+--arf--

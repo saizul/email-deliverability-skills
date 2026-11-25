@@ -1,0 +1,7 @@
+[
+  {"name": "akismet", "status": "active", "update": "none", "version": "5.3"},
+  {"name": "wp-mail-smtp", "status": "active", "update": "none", "version": "4.2.0"},
+  {"name": "post-smtp", "status": "active", "update": "available", "version": "3.0.1"},
+  {"name": "disable-emails", "status": "active", "update": "none", "version": "1.8.1"},
+  {"name": "contact-form-7", "status": "active", "update": "none", "version": "6.0"}
+]

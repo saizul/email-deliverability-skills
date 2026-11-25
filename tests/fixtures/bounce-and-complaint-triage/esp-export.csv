@@ -1,0 +1,5 @@
+Email,Status,Reason
+gone@example.com,5.1.1,550 5.1.1 <gone@example.com>: Recipient address rejected: User unknown in virtual mailbox table
+FULL@Example.com,5.2.2,552 5.2.2 Mailbox full
+gone@example.com,5.1.1,550 5.1.1 user unknown
+weird@example.com,,something odd happened

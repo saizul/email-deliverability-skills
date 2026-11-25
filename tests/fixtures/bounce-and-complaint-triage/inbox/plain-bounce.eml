@@ -1,0 +1,9 @@
+From: postmaster@legacy-host.example
+To: bounces@example.com
+Subject: Undeliverable: Your invoice
+Content-Type: text/plain
+
+Delivery has failed to these recipients or groups:
+
+gone.user@legacy-host.example
+Remote Server returned '550 5.4.1 Recipient address rejected: Access denied'

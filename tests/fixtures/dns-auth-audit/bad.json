@@ -1,0 +1,15 @@
+[
+  {"name": "example.org", "type": "TXT", "value": "v=spf1 a mx ptr include:spf1.example.net include:spf2.example.net include:spf3.example.net include:gone.example.net +all"},
+  {"name": "example.org", "type": "TXT", "value": "v=spf1 include:old.example.net ~all"},
+  {"name": "spf1.example.net", "type": "TXT", "value": "v=spf1 include:spf4.example.net a mx ~all"},
+  {"name": "spf2.example.net", "type": "TXT", "value": "v=spf1 a mx exists:x.example.net ~all"},
+  {"name": "spf3.example.net", "type": "TXT", "value": "v=spf1 include:spf4.example.net ~all"},
+  {"name": "spf4.example.net", "type": "TXT", "value": "v=spf1 mx a ~all"},
+  {"name": "gone.example.net", "type": "TXT", "value": "some-verification=1"},
+  {"name": "_dmarc.example.org", "type": "TXT", "value": "v=DMARC1; p=none; pct=50; rua=mailto:reports@dmarc-vendor.example.net"},
+  {"name": "mail._domainkey.example.org", "type": "TXT", "value": "v=DKIM1; k=rsa; t=y; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDNRH41uLbY/kQuPUNyBOUtsiIaWACKBabEZHFZwyTJhZuBDnZuydKGY8qCjdX0s7LksGzmB0HHqHzkLIIYBy6MNb+ZLcnpxhZhLnaWps7MG3jlEGFzEdijws5vRH7U1XseL+uJQUw0PBAnxNHDhrvEzWE+MNjxat+Rt1hKImWx9QIDAQAB"},
+  {"name": "old._domainkey.example.org", "type": "TXT", "value": "v=DKIM1; p="},
+  {"name": "default._bimi.example.org", "type": "TXT", "value": "v=BIMI1; l=http://example.org/logo.png"},
+  {"name": "_mta-sts.example.org", "type": "TXT", "value": "v=STSv1; id=bad-id!"},
+  {"name": "example.org", "type": "MX", "value": "10 mx.example.org"}
+]

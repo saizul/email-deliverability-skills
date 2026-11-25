@@ -1,0 +1,13 @@
+{
+  "example.com": {
+    "TXT": ["v=spf1 ip4:192.0.2.0/24 include:_spf.esp.example.net -all", "google-site-verification=abc123"],
+    "MX": ["10 mx1.example.com.", "20 mx2.example.com."]
+  },
+  "_spf.esp.example.net": {"TXT": ["v=spf1 ip4:198.51.100.0/24 include:_spf2.esp.example.net ~all"]},
+  "_spf2.esp.example.net": {"TXT": ["v=spf1 ip4:203.0.113.0/24 ~all"]},
+  "_dmarc.example.com": {"TXT": ["v=DMARC1; p=reject; rua=mailto:dmarc@example.com; adkim=r; aspf=r"]},
+  "s1._domainkey.example.com": {"TXT": ["v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArUXyPTsaEd9Yf9KAO6tsOY2INIp+7Y0U8G0/73AZZqDDgeiPOMDI/YcSuLwHbzeHudF54GwP1PX4EwxCN3MO36+9Z/lhlpnP4ZiK2fBsFEoCW0E/ipoCHqZIp90Gg565Bbbm4wfUvtxRQxGT5sPzORorjx/x/UKil1XUwTqQKTHNRH41uLbY/kQuPUNyBOUtsiIaWACKBabEZHFZwyTJhZuBDnZuydKGY8qCjdX0s7LksGzmB0HHqHzkLIIYBy6MNb+ZLcnpxhZhLnaWps7MG3jlEGFzEdijws5vRH7U1XseL+uJQUw0PBAnxNHDhrvEzWE+MNjxat+Rt1hKImWx9QIDAQAB"]},
+  "default._bimi.example.com": {"TXT": ["v=BIMI1; l=https://example.com/bimi/logo.svg; a=https://example.com/bimi/vmc.pem"]},
+  "_mta-sts.example.com": {"TXT": ["v=STSv1; id=20261125"]},
+  "_smtp._tls.example.com": {"TXT": ["v=TLSRPTv1; rua=mailto:tls-reports@example.com"]}
+}

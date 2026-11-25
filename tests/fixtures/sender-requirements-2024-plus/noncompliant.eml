@@ -1,0 +1,18 @@
+Received: from vps123 (unknown [203.0.113.80])
+        by mx.google.example with SMTP id def456
+        for <reader@gmail.example>;
+        Wed, 25 Nov 2026 10:00:01 -0800 (PST)
+Authentication-Results: mx.google.example;
+       dkim=pass header.i=@esp-shared.example.net header.s=k1 header.b=XyZ;
+       spf=pass (google.example: domain of bounces@esp-shared.example.net designates 203.0.113.80 as permitted sender) smtp.mailfrom=bounces@esp-shared.example.net;
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=example.com
+Return-Path: <bounces@esp-shared.example.net>
+DKIM-Signature: v=1; a=rsa-sha256; d=esp-shared.example.net; s=k1; h=from:to:subject:date; bh=AAAA; b=BBBB
+From: Example Shop <shop@example.com>
+To: reader@gmail.example
+Subject: Sale
+List-Unsubscribe: <mailto:unsub@example.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+
+Buy now.

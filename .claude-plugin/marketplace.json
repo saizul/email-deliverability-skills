@@ -1,0 +1,27 @@
+{
+  "name": "email-deliverability-skills",
+  "description": "Agent Skills for getting email into the inbox: authentication, DMARC reports, bounces, templates, list hygiene, warm-up and sender requirements.",
+  "owner": {
+    "name": "Saizul Amin",
+    "url": "https://github.com/saizul"
+  },
+  "plugins": [
+    {
+      "name": "email-deliverability-skills",
+      "source": "./",
+      "description": "SPF/DKIM/DMARC/BIMI/MTA-STS audit, DMARC aggregate report analysis, bounce and complaint triage, email template lint, list hygiene, warm-up plans, Gmail/Yahoo/Outlook sender requirements and WordPress SMTP setup.",
+      "category": "productivity",
+      "tags": ["email", "deliverability", "dmarc", "spf", "dkim", "smtp", "marketing", "wordpress"],
+      "skills": [
+        "./skills/dns-auth-audit",
+        "./skills/dmarc-report-analysis",
+        "./skills/bounce-and-complaint-triage",
+        "./skills/email-template-lint",
+        "./skills/list-hygiene",
+        "./skills/warmup-plan",
+        "./skills/sender-requirements-2024-plus",
+        "./skills/wordpress-smtp-deliverability"
+      ]
+    }
+  ]
+}

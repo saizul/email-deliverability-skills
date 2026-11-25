@@ -1,0 +1,27 @@
+From: Example News <news@example.com>
+To: reader@example.org
+Subject: November product update
+Date: Wed, 25 Nov 2026 10:00:00 +0000
+Message-ID: <20261125100000.abc@example.com>
+MIME-Version: 1.0
+List-Unsubscribe: <https://example.com/u/abc123>, <mailto:unsubscribe@example.com?subject=unsubscribe>
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+Content-Type: multipart/alternative; boundary="alt"
+
+--alt
+Content-Type: text/plain; charset=utf-8
+
+Hi there, this month we shipped saved filters, CSV export for every report and faster search.
+Read the release notes: https://example.com/blog/november
+Unsubscribe: https://example.com/unsubscribe?u=abc
+
+--alt
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<html><head><title>November</title></head><body><p>Hi there, this month we shipped saved filters, CSV e=
+xport for every report and a faster search that returns results quickly even on large workspaces. Rea=
+d the notes and reply with feedback.</p><p><a href=3D"https://example.com/blog/november">Release notes</a></p>=
+<p><a href=3D"https://example.com/unsubscribe?u=3Dabc">Unsubscribe</a></p></body></html>
+
+--alt--

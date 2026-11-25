@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Release artifacts (built by .github/workflows/release.yml)
+dist/
+
+# Outputs written when running the scripts inside the repo
+*.clean.csv
+*.flagged.csv
+suppress-out.csv
+
+# Never commit credentials or real mail data
+*.env
+!*.env.example
+private/
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store

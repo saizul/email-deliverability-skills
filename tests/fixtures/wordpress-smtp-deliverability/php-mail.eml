@@ -1,0 +1,20 @@
+Received: from vps123.localdomain (unknown [203.0.113.80])
+        by mx.google.example with SMTP id ghi789
+        for <owner@gmail.example>;
+        Wed, 25 Nov 2026 10:00:01 -0800 (PST)
+Received: by vps123.localdomain (Postfix, from userid 33)
+        id 1A2B3C; Wed, 25 Nov 2026 18:00:00 +0000 (UTC)
+Authentication-Results: mx.google.example;
+       spf=softfail (google.example: domain of transitioning www-data@vps123.localdomain does not designate 203.0.113.80 as permitted sender) smtp.mailfrom=www-data@vps123.localdomain;
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=example.com
+Return-Path: <www-data@vps123.localdomain>
+From: WordPress <wordpress@example.com>
+To: owner@gmail.example
+Subject: [Example Site] Password Reset
+X-PHP-Originating-Script: 33:class-phpmailer.php
+X-Mailer: PHPMailer 6.9.1 (https://github.com/PHPMailer/PHPMailer)
+Date: Wed, 25 Nov 2026 18:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Someone has requested a password reset for the following account.
