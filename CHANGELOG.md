@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `list-hygiene`: `list_hygiene.py --fuzzy-typos` flags domains one edit (insert, delete,
+  replace or adjacent swap) away from a major mailbox provider (`gmaik.com` -> `gmail.com`,
+  `yahoo.cm` -> `yahoo.com`) in addition to the built-in typo map. Real neighbouring domains
+  such as `mail.com` and `ymail.com` are exempt, and ambiguous matches are not guessed.
+
 ## [0.1.0] - 2026-11-25
 
 ### Added

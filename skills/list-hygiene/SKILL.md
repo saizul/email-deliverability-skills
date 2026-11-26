@@ -40,8 +40,12 @@ Paths below are relative to this skill's folder (in Claude Code: `${CLAUDE_SKILL
    python3 scripts/list_hygiene.py contacts.csv --gmail-normalize \
        --suppress suppress.csv --clean-out contacts.clean.csv --flagged-out contacts.flagged.csv
    python3 scripts/list_hygiene.py contacts.csv --column "Work Email" --drop-role --json
+   python3 scripts/list_hygiene.py contacts.csv --fuzzy-typos --flagged-out contacts.flagged.csv
    ```
    The email column is auto-detected (`--column` to choose). `--disposable-list` adds domains.
+   `--fuzzy-typos` also flags domains one edit (insert, delete, replace, adjacent swap) away
+   from a major provider (`gmaik.com`, `yahoo.cm`), with known real neighbours such as
+   `mail.com` and `ymail.com` exempt. Review these suggestions before acting on them.
    Exit 1 means some rows were flagged.
 3. **Decide per flag** (see [references/policy.md](references/policy.md)):
    - `invalid`, `duplicate`, `disposable`, `suppressed`: excluded from the clean file.
