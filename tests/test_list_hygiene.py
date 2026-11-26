@@ -122,3 +122,41 @@ def test_errors_and_column(tmp_path):
     r = run_script(SKILL, SCRIPT, str(CONTACTS), "--allow-reserved")
     assert "typo -> cara@gmail.com" in r.stdout
     assert run_script(SKILL, SCRIPT, "--help").returncode == 0
+
+
+@pytest.mark.parametrize(
+    ("a", "b", "dist"),
+    [
+        ("gmail.com", "gmail.com", 0),
+        ("gmaik.com", "gmail.com", 1),
+        ("gmali.com", "gmail.com", 1),  # adjacent swap counts as one edit
+        ("gmail.cm", "gmail.com", 1),
+        ("ggmail.com", "gmail.com", 1),
+        ("gmx.com", "gmail.com", 2),
+        ("company.com", "gmail.com", 2),
+    ],
+)
+def test_edit_distance(a, b, dist):
+    assert mod.edit_distance(a, b) == dist
+
+
+def test_fuzzy_typo_targets_and_exemptions():
+    assert mod.fuzzy_typo("gmaik.com") == "gmail.com"
+    assert mod.fuzzy_typo("outlookk.com") == "outlook.com"
+    assert mod.fuzzy_typo("yahoo.cm") == "yahoo.com"
+    assert mod.fuzzy_typo("comcast.nt") == "comcast.net"
+    for real in ("gmail.com", "mail.com", "ymail.com", "yahoo.co.uk", "acme.com", "gmial.com"):
+        assert mod.fuzzy_typo(real) is None, real
+
+
+def test_fuzzy_typos_flag_is_opt_in(tmp_path):
+    f = tmp_path / "list.csv"
+    f.write_text("email\nzoe@gmaik.com\nyan@hotmial.com\nkai@mail.com\nbo@outlok.cm\n")
+    _, plain = hygiene(str(f))
+    assert plain["flags"] == {"typo": 1}  # only the built-in map (hotmial.com)
+    _, fuzzy = hygiene(str(f), "--fuzzy-typos")
+    assert fuzzy["flags"] == {"typo": 2}
+    rows = {r["email"]: r for r in fuzzy["flagged_rows"]}
+    assert rows["zoe@gmaik.com"]["suggestion"] == "zoe@gmail.com"
+    assert "kai@mail.com" not in rows
+    assert "bo@outlok.cm" not in rows  # two edits away: not guessed

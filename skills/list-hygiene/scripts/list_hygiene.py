@@ -11,7 +11,9 @@ Flags:
                dots and +tags for Gmail/Googlemail)
   role         role account (info@, admin@, sales@ ...): shared inboxes complain more
   disposable   throwaway mailbox provider
-  typo         common domain typo (gmial.com -> gmail.com); suggestion column says the fix
+  typo         common domain typo (gmial.com -> gmail.com); suggestion column says the fix.
+               --fuzzy-typos also catches any single-edit typo (insert, delete, swap,
+               replace) of a major mailbox provider domain (gmaik.com, yahoo.cm)
   suppressed   present in --suppress FILE (previous hard bounces, complaints, unsubscribes)
 
 By default 'role' rows are kept in the clean output (flagged only); use --drop-role to drop them.
@@ -69,6 +71,40 @@ TYPOS = {
     "live.co": "live.com", "msn.co": "msn.com", "protonmail.co": "protonmail.com",
 }  # fmt: skip
 GMAIL_DOMAINS = {"gmail.com", "googlemail.com"}
+FUZZY_TARGETS = (
+    "gmail.com", "googlemail.com", "yahoo.com", "hotmail.com", "outlook.com", "icloud.com",
+    "protonmail.com", "comcast.net",
+)  # fmt: skip
+# Real mailbox domains one edit away from a target: never reported as typos.
+REAL_NEARBY = {
+    "mail.com", "gmx.com", "ymail.com", "yahoo.co.uk", "yahoo.co.in", "yahoo.fr", "yahoo.de",
+    "hotmail.co.uk", "hotmail.fr", "hotmail.de", "outlook.de", "outlook.fr", "icloud.co",
+}  # fmt: skip
+
+
+def edit_distance(a: str, b: str, limit: int = 2) -> int:
+    """Optimal string alignment distance (insert, delete, replace, adjacent swap), capped at limit."""
+    if abs(len(a) - len(b)) >= limit:
+        return limit
+    prev2: list[int] = []
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i] + [0] * len(b)
+        for j, cb in enumerate(b, 1):
+            cost = 0 if ca == cb else 1
+            cur[j] = min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost)
+            if i > 1 and j > 1 and ca == b[j - 2] and a[i - 2] == cb:
+                cur[j] = min(cur[j], prev2[j - 2] + 1)
+        prev2, prev = prev, cur
+    return min(prev[-1], limit)
+
+
+def fuzzy_typo(domain: str) -> str | None:
+    """Return the provider domain that `domain` is one edit away from, if any."""
+    if domain in FUZZY_TARGETS or domain in REAL_NEARBY or domain in TYPOS:
+        return None
+    hits = [t for t in FUZZY_TARGETS if edit_distance(domain, t) == 1]
+    return hits[0] if len(hits) == 1 else None
 
 
 def validate_syntax(addr: str) -> str | None:
@@ -132,6 +168,7 @@ def check_rows(
     suppress: set[str] | None = None,
     extra_disposable: set[str] | None = None,
     allow_reserved: bool = False,
+    fuzzy_typos: bool = False,
 ) -> list[dict]:
     disposable = DISPOSABLE | (extra_disposable or set())
     suppress = {normalise(s, gmail_normalize) for s in (suppress or set())}
@@ -151,9 +188,10 @@ def check_rows(
             reason = err
         domain = addr.rsplit("@", 1)[1].lower() if "@" in addr else ""
         local = addr.rsplit("@", 1)[0].lower() if "@" in addr else ""
-        if domain in TYPOS:
+        fixed = TYPOS.get(domain) or (fuzzy_typo(domain) if fuzzy_typos and not err else None)
+        if fixed:
             flags.append("typo")
-            suggestion = f"{addr.rsplit('@', 1)[0]}@{TYPOS[domain]}"
+            suggestion = f"{addr.rsplit('@', 1)[0]}@{fixed}"
         if domain in disposable or any(domain.endswith("." + d) for d in disposable):
             flags.append("disposable")
         base_local = re.split(r"[+]", local, maxsplit=1)[0]
@@ -203,6 +241,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--suppress", help="file of addresses to exclude (one per line or CSV with an email column)")
     p.add_argument("--disposable-list", help="extra disposable domains, one per line")
     p.add_argument("--drop-role", action="store_true", help="drop role accounts from the clean output")
+    p.add_argument(
+        "--fuzzy-typos",
+        action="store_true",
+        help="also flag single-edit typos of major provider domains (gmaik.com, yahoo.cm)",
+    )
     p.add_argument("--allow-reserved", action="store_true", help="accept example.com/.test (for testing)")
     p.add_argument("--clean-out", help="write rows that pass to this CSV")
     p.add_argument("--flagged-out", help="write flagged rows (with flags/suggestion columns) to this CSV")
@@ -223,7 +266,7 @@ def main(argv: list[str] | None = None) -> int:
     except (OSError, ValueError, UnicodeDecodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
-    results = check_rows(rows, column, args.gmail_normalize, suppress, extra, args.allow_reserved)
+    results = check_rows(rows, column, args.gmail_normalize, suppress, extra, args.allow_reserved, args.fuzzy_typos)
     drop = {"invalid", "duplicate", "disposable", "typo", "suppressed"} | ({"role"} if args.drop_role else set())
     clean = [r for r in results if not drop & set(r["flags"])]
     flagged = [r for r in results if r["flags"]]
