@@ -90,3 +90,33 @@ def test_cli_metrics_and_errors():
     assert run_script(SKILL, SCRIPT, "--target", "100", "--providers", "gmail=0.5").returncode == 2
     assert run_script(SKILL, SCRIPT, "--target", "100", "--start-date", "tomorrow").returncode == 2
     assert run_script(SKILL, SCRIPT, "--help").returncode == 0
+
+
+def test_provider_split_adds_up_exactly():
+    for vol in (1, 7, 73, 74, 846, 999, 12345):
+        split = mod.split_volume(vol, mod.DEFAULT_SHARE)
+        assert sum(split.values()) == vol
+    assert mod.split_volume(74, mod.DEFAULT_SHARE)["gmail"] == 33  # 33.3 keeps the floor
+    plan = mod.build_plan(1000, start=33, share=mod.DEFAULT_SHARE)
+    assert all(sum(d["providers"].values()) == d["volume"] for d in plan)
+
+
+def test_metrics_from_raw_counts():
+    m = mod.from_counts({"sent": 5000, "bounced": 60, "complaints": 3, "deferred": 100})
+    assert m == {"bounce": 1.2, "complaint": 0.06, "deferral": 2.0}
+    assert mod.decide(m)["decision"] == "advance"
+    assert mod.from_counts({"bounce": 1.0}) == {"bounce": 1.0}
+    with pytest.raises(ValueError):
+        mod.from_counts({"bounced": 10})
+    with pytest.raises(ValueError):
+        mod.from_counts({"sent": 100, "bounced": 1, "bounce": 1.0})
+
+
+def test_cli_metrics_counts():
+    r = run_script(SKILL, SCRIPT, "--metrics", "sent=2000,bounced=50,complaints=1", "--json")
+    data = json.loads(r.stdout)
+    assert r.returncode == 1 and data["decision"] == "hold"
+    assert data["metrics"] == {"bounce": 2.5, "complaint": 0.05}
+    r = run_script(SKILL, SCRIPT, "--metrics", "sent=10000,complaints=40")
+    assert r.returncode == 1 and r.stdout.startswith("Decision: STEP BACK (complaint 0.4%)")
+    assert run_script(SKILL, SCRIPT, "--metrics", "sent=0,bounced=1").returncode == 2

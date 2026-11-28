@@ -5,7 +5,9 @@ Plan mode (default): daily volumes grow geometrically from --start to --target, 
 engagement segment for each day, a per-hour rate, and an optional per-provider split.
 
 Decision mode (--metrics): given yesterday's results, say whether to advance to the next
-day's volume, hold, or step back, using conservative thresholds.
+day's volume, hold, or step back, using conservative thresholds. Give percentages
+(bounce=1.2,complaint=0.05,deferral=2) or the raw counts from the ESP report
+(sent=5000,bounced=60,complaints=3,deferred=100); counts are turned into percentages of sent.
 
 Output: markdown table (default), --csv or --json. Nothing is sent anywhere.
 
@@ -51,6 +53,37 @@ def segment_for(volume: int, target: int) -> str:
     return "full permitted list (exclude 12+ months inactive)"
 
 
+COUNT_KEYS = {"bounced": "bounce", "complaints": "complaint", "deferred": "deferral"}
+
+
+def from_counts(metrics: dict[str, float]) -> dict[str, float]:
+    """Turn sent/bounced/complaints/deferred counts into the percentages decide() uses."""
+    counts = [k for k in COUNT_KEYS if k in metrics]
+    if not counts:
+        return metrics
+    sent = metrics.get("sent", 0)
+    if sent <= 0:
+        raise ValueError("raw counts (bounced, complaints, deferred) need sent=N greater than 0")
+    out = {k: v for k, v in metrics.items() if k != "sent" and k not in COUNT_KEYS}
+    for key in counts:
+        pct_key = COUNT_KEYS[key]
+        if pct_key in out:
+            raise ValueError(f"give either {key}= (count) or {pct_key}= (percent), not both")
+        out[pct_key] = round(100 * metrics[key] / sent, 3)
+    return out
+
+
+def split_volume(volume: int, share: dict[str, float]) -> dict[str, int]:
+    """Per-provider volumes that add up exactly to volume (largest remainder rounding)."""
+    total = sum(share.values()) or 1.0
+    raw = {k: volume * v / total for k, v in share.items()}
+    out = {k: int(math.floor(x)) for k, x in raw.items()}
+    left = volume - sum(out.values())
+    for k in sorted(raw, key=lambda k: raw[k] - out[k], reverse=True)[:left]:
+        out[k] += 1
+    return out
+
+
 def build_plan(
     target: int,
     start: int = 50,
@@ -90,7 +123,7 @@ def build_plan(
             "segment": segment_for(vol, target),
         }
         if share:
-            row["providers"] = {k: int(round(vol * v)) for k, v in share.items()}
+            row["providers"] = split_volume(vol, share)
         days.append(row)
         if vol >= target:
             at_target += 1
@@ -205,7 +238,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     p.add_argument("--weekdays-only", action="store_true", help="skip Saturdays and Sundays")
     p.add_argument("--hold-days", type=int, default=3, help="days to stay at target at the end (default 3)")
-    p.add_argument("--metrics", help="decision mode: bounce=%%,complaint=%%,deferral=%%,blocks=N")
+    p.add_argument(
+        "--metrics",
+        help="decision mode: bounce=%%,complaint=%%,deferral=%%,blocks=N "
+        "or raw counts sent=N,bounced=N,complaints=N,deferred=N",
+    )
     fmt = p.add_mutually_exclusive_group()
     fmt.add_argument("--json", action="store_true", help="print JSON")
     fmt.add_argument("--csv", action="store_true", help="print CSV")
@@ -213,11 +250,15 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         if args.metrics:
-            result = decide(parse_kv(args.metrics))
+            metrics = from_counts(parse_kv(args.metrics))
+            result = decide(metrics)
+            result["metrics"] = metrics
             if args.json:
                 print(json.dumps(result, indent=2))
             else:
-                print(f"Decision: {result['decision'].upper()}")
+                m = result["metrics"]
+                shown = ", ".join(f"{k} {m[k]:g}%" for k in ("bounce", "complaint", "deferral") if k in m)
+                print(f"Decision: {result['decision'].upper()}" + (f" ({shown})" if shown else ""))
                 for r in result["reasons"]:
                     print(f"  - {r}")
                 print(f"Action: {result['action']}")

@@ -8,6 +8,14 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- `warmup-plan`: `warmup_plan.py --metrics` accepts raw counts
+  (`sent=N,bounced=N,complaints=N,deferred=N`) and converts them to percentages; the
+  decision output now shows the rates it used (`metrics` in JSON).
+
+### Fixed
+
+- `warmup-plan`: the per-provider split now adds up to the day's volume exactly (largest
+  remainder rounding); before, rows could be one or two messages over or under.
 - `list-hygiene`: `list_hygiene.py --fuzzy-typos` flags domains one edit (insert, delete,
   replace or adjacent swap) away from a major mailbox provider (`gmaik.com` -> `gmail.com`,
   `yahoo.cm` -> `yahoo.com`) in addition to the built-in typo map. Real neighbouring domains

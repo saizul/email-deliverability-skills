@@ -56,7 +56,10 @@ Paths below are relative to this skill's folder (in Claude Code: `${CLAUDE_SKILL
 5. **Daily gate.** Each morning, check the previous day's results:
    ```bash
    python3 scripts/warmup_plan.py --metrics bounce=0.8,complaint=0.04,deferral=2
+   python3 scripts/warmup_plan.py --metrics sent=5000,bounced=40,complaints=2,deferred=100
    ```
+   Raw counts from the ESP report are converted to percentages of `sent`, so nobody
+   has to do the division (a common source of 10x mistakes with complaint rates).
    `advance` (exit 0), `hold` or `step back` (exit 1) with the reason and what to do.
 6. **Report** the plan table, the gates and the prerequisites still open.
 
